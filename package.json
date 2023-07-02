@@ -1,0 +1,44 @@
+{
+  "name": "24_soketio_with_typescript",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon server.ts",
+    "eslint:fix": "eslint --fix",
+    "lint": "eslint . --ext .ts",
+    "gen": "npx tsc",
+    "build": "concurrently \"npx tsc\" \"node ./dist/server.js\"",
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
+    "prettier-format": "prettier --config .prettierrc *.ts --write",
+    "generate-ts-config": "npx tsc --init"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "envalid": "^7.3.1",
+    "express": "^4.18.2",
+    "http-errors": "^2.0.0",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.3.1",
+    "socket.io": "^4.7.1",
+    "tsyringe": "^4.8.0",
+    "winston": "^3.9.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/node": "^20.3.2",
+    "@typescript-eslint/eslint-plugin": "^5.60.1",
+    "@typescript-eslint/parser": "^5.60.1",
+    "concurrently": "^8.2.0",
+    "eslint": "^8.43.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "install-peers": "^1.0.4",
+    "nodemon": "^2.0.22",
+    "prettier": "^2.8.8",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  }
+}
