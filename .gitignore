@@ -134,3 +134,6 @@ dist
 *.pem
 *.log
 *.lock
+
+./test
+./views

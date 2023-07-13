@@ -2,10 +2,10 @@ export interface ServerToClientEvents {
   noArg: () => void;
   basicEmit: (a: number, b: string, c: Buffer) => void;
   withAck: (d: string, callback: (e: number) => void) => void;
-  chat: () => string;
+  chat: (chatMessageBody: ChatMessageBody) => string;
 }
 
-export type ChatMessageBody = { from: string; to: string; message: string };
+export type ChatMessageBody = { to: string; message: string };
 
 export interface ClientToServerEvents {
   chat: (chatMessageBody: ChatMessageBody) => void;

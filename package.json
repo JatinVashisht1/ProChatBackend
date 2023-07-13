@@ -15,7 +15,9 @@
     "generate-ts-config": "npx tsc --init"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
     "envalid": "^7.3.1",
     "express": "^4.18.2",
     "http-errors": "^2.0.0",
@@ -26,6 +28,7 @@
     "winston": "^3.9.0"
   },
   "devDependencies": {
+    "@types/ejs": "^3.1.2",
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.3.2",
@@ -35,9 +38,11 @@
     "eslint": "^8.43.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-tsdoc": "^0.2.17",
     "install-peers": "^1.0.4",
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
+    "socket.io-client": "^4.7.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.6"
   }

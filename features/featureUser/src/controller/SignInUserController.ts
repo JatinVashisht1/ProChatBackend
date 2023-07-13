@@ -4,9 +4,9 @@ import { IUserRepository } from "../../domain/repository/IUserRepository";
 import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import { PasswordType } from "../../domain/model/PasswordType";
-import { issueJWT, validPassword } from "../../../utils/jwtUtils";
 import { assertIsDefined } from "../../../../common/utils/assertIsDefined";
 import { logger } from "../../../../common/winstonLoggerConfiguration";
+import { validPassword, issueJWT } from "../../../common/utils/jwtUtils";
 
 interface signInUserBody {
   username?: string;
@@ -19,6 +19,13 @@ export class SignInController {
     @inject(I_USER_REPOSITORY) private userRepository?: IUserRepository
   ) {}
 
+  /**
+   * Request handler to for signing in a user ("/user/signin")
+   * @param req Express Request object
+   * @param res Express Response object
+   * @param next Express Next Function
+   * @returns void
+   */
   signInHandler: RequestHandler<unknown, unknown, signInUserBody, unknown> =
     async (req, res, next) => {
       try {
@@ -31,7 +38,7 @@ export class SignInController {
 
         const userEntity = await this.userRepository.getUser(username);
 
-        logger.info(JSON.stringify(userEntity));
+        // logger.info(JSON.stringify(userEntity));
 
         const passwordHashed: PasswordType = {
           salt: userEntity.password.salt,

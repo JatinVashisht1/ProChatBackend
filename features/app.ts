@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { CHAT, CONNECTION, socketEvents } from "../common/Events";
+import { CHAT, CONNECTION } from "../common/Events";
 import {
   ChatMessageBody,
   ClientToServerEvents,
@@ -13,11 +13,21 @@ import { chatSocketHandler } from "./featureChat/src/socketHandler/chatSocketHan
 import userRouter from "./featureUser/src/routes/userRoutes";
 import { isHttpError } from "http-errors";
 import { logger } from "../common/winstonLoggerConfiguration";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import { getTokenParts, getUsernameFromToken } from "./common/utils/jwtUtils";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.get("/", (req, res) => {
+  // logger.info("user requested default page");
+  return res.status(200).json({ success: true });
+});
 
 app.use("/user", userRouter);
 
@@ -41,11 +51,47 @@ const io = new Server<
   SocketData
 >(httpServer);
 
+io.use((socket, next) => {
+  try {
+    const token = socket.handshake.auth.token as string;
+    // logger.info(`token is ${token}`);
+    if (!token) {
+      return next(new Error("Authentication failed"));
+    }
+
+    const tokenPart = getTokenParts(token);
+    const username = getUsernameFromToken(tokenPart[1]);
+    // logger.info(`${username}`);
+
+    socket.data.username = username;
+
+    next();
+  } catch (error) {
+    logger.error(error);
+    let errorMessage = "";
+
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    const tsError = new Error(errorMessage);
+    next(tsError);
+  }
+});
+
 io.on(CONNECTION, (socket) => {
   const { username } = socket.data;
+
   socket.join(username);
 
   socket.on(CHAT, (chatMessageBody: ChatMessageBody) => {
-    chatSocketHandler(chatMessageBody, socket);
+    chatSocketHandler(chatMessageBody, socket, (message) => {
+      io.to(username).emit(CHAT, message);
+    });
   });
+
+  const chatMessageBody: ChatMessageBody = {
+    to: username,
+    message: "hello",
+  };
+  socket.to(username).emit(CHAT, chatMessageBody);
 });
