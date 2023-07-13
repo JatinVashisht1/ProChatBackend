@@ -137,3 +137,5 @@ dist
 
 ./test
 ./views
+./test/*
+./views/*
