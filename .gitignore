@@ -136,6 +136,3 @@ dist
 *.lock
 
 ./test
-./views
-./test/*
-./views/*
