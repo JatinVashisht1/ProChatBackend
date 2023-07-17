@@ -7,8 +7,8 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const pathToPrivKey = path.join(__dirname, "..", "..", "..", "id_rsa_priv.pem");
-const pathToPubKey = path.join(__dirname, "..", "..", "..", "id_rsa_pub.pem");
+const pathToPrivKey = path.join(__dirname, "..", "..", "..", "..", "id_rsa_priv.pem");
+const pathToPubKey = path.join(__dirname, "..", "..", "..", "..", "id_rsa_pub.pem");
 // const pathToPrivKey = path.join(__dirname, "/etc/secrets/id_rsa_priv.pem");
 // const pathToPubKey = path.join(
 //   __dirname,
