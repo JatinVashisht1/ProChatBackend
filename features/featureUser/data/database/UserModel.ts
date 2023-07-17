@@ -11,18 +11,23 @@ const PasswordSchema = new Schema({
   },
 });
 
-const UserSchema = new Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-  },
+const UserSchema = new Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+    },
 
-  password: {
-    type: PasswordSchema,
-    required: true,
+    password: {
+      type: PasswordSchema,
+      required: true,
+    },
   },
-});
+  {
+    timestamps: true,
+  }
+);
 
 export type UserType = InferSchemaType<typeof UserSchema>;
 

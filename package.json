@@ -9,12 +9,14 @@
     "eslint:fix": "eslint --fix",
     "lint": "eslint . --ext .ts",
     "gen": "npx tsc",
-    "build": "concurrently \"npx tsc\" \"node ./dist/server.js\"",
+    "build": "npx tsc && npx tsc-esm \"./dist/**/*.js\"",
+    "prod": "npm-run-all build && node ./dist/server.js",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
     "prettier-format": "prettier --config .prettierrc *.ts --write",
     "generate-ts-config": "npx tsc --init"
   },
   "dependencies": {
+    "concurrently": "^8.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
@@ -23,8 +25,11 @@
     "http-errors": "^2.0.0",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.3.1",
+    "npm-run-all": "^4.1.5",
     "socket.io": "^4.7.1",
+    "tsc-esm": "^1.0.4",
     "tsyringe": "^4.8.0",
+    "typescript": "^5.1.6",
     "winston": "^3.9.0"
   },
   "devDependencies": {
@@ -34,7 +39,6 @@
     "@types/node": "^20.3.2",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
-    "concurrently": "^8.2.0",
     "eslint": "^8.43.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
@@ -43,7 +47,6 @@
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
     "socket.io-client": "^4.7.1",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.1.6"
+    "ts-node": "^10.9.1"
   }
 }

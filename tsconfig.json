@@ -71,5 +71,6 @@
     "esm": true,
     "experimentalSpecifierResolution": "node"
   },
+  "include": ["./"],
   "files": ["@types/express/index.d.ts"]
 }

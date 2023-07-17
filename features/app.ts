@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import express, { Request, Response, NextFunction } from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
@@ -9,13 +10,15 @@ import {
   ServerToClientEvents,
   SocketData,
 } from "./common/SocketEvents";
-import { chatSocketHandler } from "./featureChat/src/socketHandler/chatSocketHandler";
+import { ChatSocketController } from "./featureChat/src/Controllers/ChatSocketController";
 import userRouter from "./featureUser/src/routes/userRoutes";
-import { isHttpError } from "http-errors";
+import createHttpError, { isHttpError } from "http-errors";
 import { logger } from "../common/winstonLoggerConfiguration";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { getTokenParts, getUsernameFromToken } from "./common/utils/jwtUtils";
+import "../di/provideDependencices";
+import { container } from "tsyringe";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -30,6 +33,10 @@ app.get("/", (req, res) => {
 });
 
 app.use("/user", userRouter);
+
+app.use((_req, _res, next) => {
+  next(createHttpError(404, "Endpoint not found"));
+});
 
 app.use((error: unknown, _req: Request, res: Response, next: NextFunction) => {
   logger.error(error);
@@ -84,9 +91,13 @@ io.on(CONNECTION, (socket) => {
   socket.join(username);
 
   socket.on(CHAT, (chatMessageBody: ChatMessageBody) => {
-    chatSocketHandler(chatMessageBody, socket, (message) => {
-      io.to(username).emit(CHAT, message);
-    });
+    new ChatSocketController().chatSocketHandler(
+      chatMessageBody,
+      socket,
+      (message) => {
+        io.to(username).emit(CHAT, message);
+      }
+    );
   });
 
   const chatMessageBody: ChatMessageBody = {

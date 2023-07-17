@@ -5,7 +5,7 @@ const logConfiguration = {
     new winston.transports.File({
       filename: "logs/applicationLogs.log",
     }),
-    new winston.transports.Console({}),
+    // new winston.transports.Console({}),
   ],
   format: winston.format.combine(
     // winston.format.label({
