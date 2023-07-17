@@ -136,3 +136,5 @@ dist
 *.lock
 
 ./test
+./*.lock
+./**/*.lock

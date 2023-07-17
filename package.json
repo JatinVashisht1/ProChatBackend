@@ -3,6 +3,9 @@
   "type": "module",
   "version": "1.0.0",
   "main": "index.js",
+  "engines": {
+    "node": ">=14.20.1"
+  },
   "license": "MIT",
   "scripts": {
     "start": "nodemon server.ts",
