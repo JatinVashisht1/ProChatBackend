@@ -17,6 +17,8 @@ const pathToPrivKey = path.join(
   "..",
   "..",
   "..",
+  "etc",
+  "secrets",
   "id_rsa_priv.pem"
 );
 const pathToPubKey = path.join(
@@ -25,6 +27,8 @@ const pathToPubKey = path.join(
   "..",
   "..",
   "..",
+  "etc",
+  "secrets",
   "id_rsa_pub.pem"
 );
 // const pathToPrivKey = path.join(__dirname, "/etc/secrets/id_rsa_priv.pem");
