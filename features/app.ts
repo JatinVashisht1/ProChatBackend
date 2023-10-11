@@ -19,6 +19,7 @@ import { fileURLToPath } from "url";
 import { getTokenParts, getUsernameFromToken } from "./common/utils/jwtUtils";
 import "../di/provideDependencices";
 import { container } from "tsyringe";
+import { chatRouter } from "./featureChat/src/routes/chatRoutes";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -33,6 +34,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/user", userRouter);
+
+app.use("/chat", chatRouter);
 
 app.use((_req, _res, next) => {
   next(createHttpError(404, "Endpoint not found"));

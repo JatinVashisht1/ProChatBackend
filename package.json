@@ -15,7 +15,7 @@
     "build": "npx tsc && npx tsc-esm \"./dist/**/*.js\"",
     "prod": "npm-run-all build && node ./dist/server.js",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
-    "prettier-format": "prettier --config .prettierrc *.ts --write",
+    "prettier-format": "prettier --config .prettierc *.ts --write",
     "generate-ts-config": "npx tsc --init"
   },
   "dependencies": {

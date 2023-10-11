@@ -6,7 +6,7 @@ import { authMiddleware } from '../../../common/utils/jwtUtils.js';
 const router = Router();
 router.post("/signup", new CreateUserController().createUserHandler);
 router.post("/signin", new SignInController().signInHandler);
-router.post("/", authMiddleware, (req, res, next) => {
+router.get("/", authMiddleware, (req, res, next) => {
     return res.status(200).json({ success: true });
 });
 export default router;

@@ -11,6 +11,7 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { getTokenParts, getUsernameFromToken } from './common/utils/jwtUtils.js';
 import '../di/provideDependencices.js';
+import { chatRouter } from './featureChat/src/routes/chatRoutes.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const app = express();
@@ -21,6 +22,7 @@ app.get("/", (req, res) => {
     return res.status(200).json({ success: true });
 });
 app.use("/user", userRouter);
+app.use("/chat", chatRouter);
 app.use((_req, _res, next) => {
     next(createHttpError(404, "Endpoint not found"));
 });
