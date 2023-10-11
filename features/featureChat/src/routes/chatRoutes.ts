@@ -4,6 +4,6 @@ import { GetChatMessagesBetween2Usernames } from "../Controllers/GetChatBetween2
 
 const router = Router();
 
-router.get("/getChatBetweenTwoUsers", authMiddleware, new GetChatMessagesBetween2Usernames().getChatMessagesBetween2UsernamesRequestHandler)
+router.get("/getuserschat", authMiddleware, new GetChatMessagesBetween2Usernames().getChatMessagesBetween2UsernamesRequestHandler)
 
 export const chatRouter = router;
