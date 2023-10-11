@@ -138,3 +138,5 @@ out
 ./test
 ./*.lock
 ./**/*.lock
+
+./dist
