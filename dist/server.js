@@ -1,8 +1,8 @@
 import "dotenv/config";
-import { httpServer } from './features/app.js';
-import { env } from './common/utils/envalidUtils.js';
+import { httpServer } from "./features/app";
+import { env } from "./common/utils/envalidUtils";
 import mongoose from "mongoose";
-import { logger } from './common/winstonLoggerConfiguration.js';
+import { logger } from "./common/winstonLoggerConfiguration";
 (() => {
     const PORT = env.PORT || 5000;
     const DB_STRING = env.DB_STRING;
@@ -11,7 +11,7 @@ import { logger } from './common/winstonLoggerConfiguration.js';
         .then(() => {
         logger.info("mongoose connected");
         httpServer.listen(PORT, () => {
-            console.log(`server up on http://localhost:${PORT}`);
+            logger.info(`server up on http://localhost:${PORT}`);
         });
     })
         .catch((err) => {

@@ -10,42 +10,44 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { CHAT } from '../../../../common/Events.js';
-import { logger } from '../../../../common/winstonLoggerConfiguration.js';
+import { CHAT } from "../../../../common/Events";
+import { logger } from "../../../../common/winstonLoggerConfiguration";
 import { autoInjectable, inject } from "tsyringe";
-import { I_CHAT_MESSAGE_REPOSITORY } from '../../../../common/Constants.js';
-import { assertIsDefined } from '../../../../common/utils/assertIsDefined.js';
+import { I_CHAT_MESSAGE_REPOSITORY } from "../../../../common/Constants";
+import { assertIsDefined } from "../../../../common/utils/assertIsDefined";
 /**
  * Controller for handling chat socket events.
  */
 export let ChatSocketController = class ChatSocketController {
+    chatRepository;
     constructor(chatRepository) {
         this.chatRepository = chatRepository;
-        /**
-         * Handles the chat socket event and performs necessary actions.
-         * @param chatMessageBody - The chat message body containing the recipient and message.
-         * @param socket - The socket instance representing the connection.
-         * @param onEmition - A callback function for emitting messages.
-         */
-        this.chatSocketHandler = async (chatMessageBody, socket, onEmition) => {
-            assertIsDefined(this.chatRepository);
-            const { to, message } = chatMessageBody;
-            const from = socket.data.username;
-            logger.info(`to: ${to} from: ${socket.data.username} message: ${message}`);
-            socket.to(to).emit(CHAT, chatMessageBody); // Emit message to recipient
-            const chatMessageEntity = {
-                senderUsername: from,
-                receiverUsername: to,
-                message: message,
-            };
-            await this.chatRepository.addChatMessage(chatMessageEntity);
-            const selfMessageBody = {
-                to: from,
-                message: message,
-            };
-            onEmition(selfMessageBody);
-        };
     }
+    /**
+     * Handles the chat socket event and performs necessary actions.
+     * @param chatMessageBody - The chat message body containing the recipient and message.
+     * @param socket - The socket instance representing the connection.
+     * @param onEmition - A callback function for emitting messages.
+     */
+    chatSocketHandler = async (chatMessageBody, socket, onEmition) => {
+        assertIsDefined(this.chatRepository);
+        const { to, message } = chatMessageBody;
+        const from = socket.data.username;
+        logger.info(`to: ${to} from: ${socket.data.username} message: ${message}`);
+        socket.to(to).emit(CHAT, chatMessageBody); // Emit message to recipient
+        const chatMessageEntity = {
+            senderUsername: from,
+            receiverUsername: to,
+            message: message,
+        };
+        await this.chatRepository.addChatMessage(chatMessageEntity);
+        const selfMessageBody = {
+            to: from,
+            message: message,
+        };
+        // logger.debug(`message is ${selfMessageBody}`)
+        onEmition(selfMessageBody);
+    };
 };
 ChatSocketController = __decorate([
     autoInjectable(),

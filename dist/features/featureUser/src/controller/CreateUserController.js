@@ -11,46 +11,47 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { autoInjectable, inject } from "tsyringe";
-import { I_USER_REPOSITORY } from '../../../../common/Constants.js';
+import { I_USER_REPOSITORY } from "../../../../common/Constants";
 import createHttpError from "http-errors";
-import { genPassword, issueJWT } from '../../../common/utils/jwtUtils.js';
+import { genPassword, issueJWT } from "../../../common/utils/jwtUtils";
 export let CreateUserController = class CreateUserController {
+    userRepository;
     constructor(userRepository) {
         this.userRepository = userRepository;
-        /**
-         * Request handler to for creating a user ("/user/signup")
-         * @param req Express Request object
-         * @param res Express Response object
-         * @param next Express Next Function
-         * @returns void
-         */
-        this.createUserHandler = async (req, res, next) => {
-            try {
-                const { username, password } = req.body;
-                if (!username || !password) {
-                    throw createHttpError(412, "Username and Password is required");
-                }
-                const passwordHashed = genPassword(password);
-                const userEntity = {
-                    username: username,
-                    password: passwordHashed,
-                };
-                if (!this.userRepository)
-                    throw createHttpError(500, "Internal server error");
-                await this.userRepository.addUser(userEntity);
-                const jwtToken = issueJWT(username);
-                return res.status(201).json({
-                    success: true,
-                    message: "user created successfully.",
-                    token: jwtToken.token,
-                });
-            }
-            catch (error) {
-                // logger.error(error);
-                next(error);
-            }
-        };
     }
+    /**
+     * Request handler to for creating a user ("/user/signup")
+     * @param req Express Request object
+     * @param res Express Response object
+     * @param next Express Next Function
+     * @returns void
+     */
+    createUserHandler = async (req, res, next) => {
+        try {
+            const { username, password } = req.body;
+            if (!username || !password) {
+                throw createHttpError(412, "Username and Password is required");
+            }
+            const passwordHashed = genPassword(password);
+            const userEntity = {
+                username: username,
+                password: passwordHashed,
+            };
+            if (!this.userRepository)
+                throw createHttpError(500, "Internal server error");
+            await this.userRepository.addUser(userEntity);
+            const jwtToken = issueJWT(username);
+            return res.status(201).json({
+                success: true,
+                message: "user created successfully.",
+                token: jwtToken.token,
+            });
+        }
+        catch (error) {
+            // logger.error(error);
+            next(error);
+        }
+    };
 };
 CreateUserController = __decorate([
     autoInjectable(),

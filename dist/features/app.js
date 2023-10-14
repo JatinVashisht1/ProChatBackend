@@ -2,16 +2,16 @@ import "reflect-metadata";
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { CHAT, CONNECTION } from '../common/Events.js';
-import { ChatSocketController } from './featureChat/src/Controllers/ChatSocketController.js';
-import userRouter from './featureUser/src/routes/userRoutes.js';
+import { CHAT, CONNECTION } from "../common/Events";
+import { ChatSocketController } from "./featureChat/src/Controllers/ChatSocketController";
+import userRouter from "./featureUser/src/routes/userRoutes";
 import createHttpError, { isHttpError } from "http-errors";
-import { logger } from '../common/winstonLoggerConfiguration.js';
+import { logger } from "../common/winstonLoggerConfiguration";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import { getTokenParts, getUsernameFromToken } from './common/utils/jwtUtils.js';
-import '../di/provideDependencices.js';
-import { chatRouter } from './featureChat/src/routes/chatRoutes.js';
+import { getTokenParts, getUsernameFromToken } from "./common/utils/jwtUtils";
+import "../di/provideDependencices";
+import { chatRouter } from "./featureChat/src/routes/chatRoutes";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const app = express();
@@ -66,6 +66,7 @@ io.on(CONNECTION, (socket) => {
     socket.join(username);
     socket.on(CHAT, (chatMessageBody) => {
         new ChatSocketController().chatSocketHandler(chatMessageBody, socket, (message) => {
+            logger.info(`message is ${JSON.stringify(message)}`);
             io.to(username).emit(CHAT, message);
         });
     });

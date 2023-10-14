@@ -17,14 +17,14 @@ interface chatMessageResponse {
 }
 
 @autoInjectable()
-export class GetChatMessagesBetween2Usernames {
+export class GetChatMessagesBetween2UsernamesController {
     constructor(@inject(I_CHAT_MESSAGE_REPOSITORY) private chatMessageRepository?: IChatMessageRepository) { }
 
     getChatMessagesBetween2UsernamesRequestHandler: RequestHandler<unknown, chatMessageResponse, getChatMessagesBetween2UsernamesBody, unknown> = async (req, res, next) => {
         assertIsDefined(this.chatMessageRepository)
 
         const {username1, username2} = req.body;
-        const chatMessagesBetweenUser1AndUser2 = await this.chatMessageRepository.getChatMessagesBetween2Usernames(username1, username1);
+        const chatMessagesBetweenUser1AndUser2 = await this.chatMessageRepository.getChatMessagesBetween2Usernames(username1, username2);
 
         const _chatMessagesResponse: chatMessageResponse = {
             username1: username1,

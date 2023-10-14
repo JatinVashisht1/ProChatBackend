@@ -1,8 +1,8 @@
 import { Router } from "express";
-import '../../../../di/provideDependencices.js';
-import { CreateUserController } from '../controller/CreateUserController.js';
-import { SignInController } from '../controller/SignInUserController.js';
-import { authMiddleware } from '../../../common/utils/jwtUtils.js';
+import "../../../../di/provideDependencices";
+import { CreateUserController } from "../controller/CreateUserController";
+import { SignInController } from "../controller/SignInUserController";
+import { authMiddleware } from "../../../common/utils/jwtUtils";
 const router = Router();
 router.post("/signup", new CreateUserController().createUserHandler);
 router.post("/signin", new SignInController().signInHandler);

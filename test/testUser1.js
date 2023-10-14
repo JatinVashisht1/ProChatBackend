@@ -7,7 +7,7 @@ import { BEARER_TOKEN_User1 } from "./common/Constants.js";
 const socket = io("http://localhost:5000/", {
   auth: { token: BEARER_TOKEN_User1 },
 });
-const username = "testBase";
+const username = "testbase";
 const friend1 = "def";
 
 // socket.auth = {BEARER_TOKEN};

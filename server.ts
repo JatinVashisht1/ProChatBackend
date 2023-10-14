@@ -12,7 +12,7 @@ import { logger } from "./common/winstonLoggerConfiguration";
     .then(() => {
       logger.info("mongoose connected");
       httpServer.listen(PORT, () => {
-        console.log(`server up on http://localhost:${PORT}`);
+        logger.info(`server up on http://localhost:${PORT}`);
       });
     })
     .catch((err) => {

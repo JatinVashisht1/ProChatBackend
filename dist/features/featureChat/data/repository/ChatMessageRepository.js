@@ -5,7 +5,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { injectable, singleton } from "tsyringe";
-import { ChatMessageModel } from '../database/ChatMessageModel.js';
+import { ChatMessageModel } from "../database/ChatMessageModel";
+import { logger } from "../../../../common/winstonLoggerConfiguration";
 /**
  * ChatMessageRepository is responsible for interacting with the chat message data storage.
  */
@@ -17,8 +18,11 @@ export let ChatMessageRepository = class ChatMessageRepository {
      * @returns promise of array of ChatMessageEntity, containing messages between user1 and user2
      */
     async getChatMessagesBetween2Usernames(user1, user2) {
+        // const messagesFromUser1AndUser2 = await ChatMessageModel.find({
+        //   $or: [{senderUsername: user1, receiverUsername: user2}, {senderUsername: user2, receiverUsername: user1}]
+        // })
         const messagesFromUser1AndUser2 = await ChatMessageModel.find({
-            $or: [{ senderUsername: user1, receiverUsername: user2 }, { senderUsername: user2, receiverUsername: user1 }]
+            $or: [{ senderUsername: user1 }]
         });
         const messageEntityListUser1AndUser2 = messagesFromUser1AndUser2.map((message) => {
             return {
@@ -53,7 +57,8 @@ export let ChatMessageRepository = class ChatMessageRepository {
      * @returns A promise that resolves when the operation is completed.
      */
     async addChatMessage(message) {
-        await ChatMessageModel.create(message);
+        const savedResult = await ChatMessageModel.create(message);
+        logger.info(`saved result is ${savedResult}`);
     }
     /**
      * Get chat messages based on the provided username.

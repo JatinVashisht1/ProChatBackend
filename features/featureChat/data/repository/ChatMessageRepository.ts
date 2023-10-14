@@ -2,6 +2,7 @@ import { injectable, singleton } from "tsyringe";
 import { IChatMessageRepository } from "../../domain/repository/IChatMessageRepository";
 import { ChatMessageEntity } from "../../domain/model/ChatMessageEntity";
 import { ChatMessageModel } from "../database/ChatMessageModel";
+import { logger } from "../../../../common/winstonLoggerConfiguration";
 
 /**
  * ChatMessageRepository is responsible for interacting with the chat message data storage.
@@ -20,7 +21,6 @@ export class ChatMessageRepository implements IChatMessageRepository {
     const messagesFromUser1AndUser2 = await ChatMessageModel.find({
       $or: [{senderUsername: user1, receiverUsername: user2}, {senderUsername: user2, receiverUsername: user1}]
     })
-
     
     
     const messageEntityListUser1AndUser2: ChatMessageEntity[] = messagesFromUser1AndUser2.map((message) => {
@@ -31,24 +31,6 @@ export class ChatMessageRepository implements IChatMessageRepository {
       }
     })
     
-    /*
-    const messagesFromUser2 = await ChatMessageModel.find({
-      from: user2,
-      to: user1,
-    })
-
-    const messageEntityListUser2: ChatMessageEntity[] = messagesFromUser2.map((message) => {
-      return {
-        senderUsername: message.senderUsername,
-        receiverUsername: message.receiverUsername,
-        message: message.message,
-      }
-    })
-    
-    messageEntityListUser2.forEach((messageEntity) => {
-      messageEntityListUser1.push(messageEntity);
-    })
-    */
 
     return messageEntityListUser1AndUser2;
   }
@@ -59,7 +41,8 @@ export class ChatMessageRepository implements IChatMessageRepository {
    * @returns A promise that resolves when the operation is completed.
    */
   async addChatMessage(message: ChatMessageEntity): Promise<void> {
-    await ChatMessageModel.create(message);
+    const savedResult = await ChatMessageModel.create(message);
+    logger.info(`saved result is ${savedResult}`)
   }
 
   /**

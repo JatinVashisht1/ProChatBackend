@@ -14,7 +14,7 @@
     "gen": "npx tsc",
     "build": "npx tsc && npx tsc-esm \"./dist/**/*.js\"",
     "prod": "npm-run-all build && node ./dist/server.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
+    "dev": "nodemon server.ts",
     "prettier-format": "prettier --config .prettierc *.ts --write",
     "generate-ts-config": "npx tsc --init"
   },

@@ -8,7 +8,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import createHttpError from "http-errors";
-import { UserModel } from '../database/UserModel.js';
+import { UserModel } from "../database/UserModel";
 import { injectable, singleton } from "tsyringe";
 export let UserRepository = class UserRepository {
     constructor() { }

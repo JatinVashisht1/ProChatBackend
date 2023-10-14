@@ -51,6 +51,8 @@ export class ChatSocketController {
       message: message,
     };
 
+    // logger.debug(`message is ${selfMessageBody}`)
+
     onEmition(selfMessageBody);
   };
 }

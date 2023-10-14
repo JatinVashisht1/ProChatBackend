@@ -4,14 +4,12 @@ const logConfiguration = {
         new winston.transports.File({
             filename: "logs/applicationLogs.log",
         }),
-        // new winston.transports.Console({}),
+        new winston.transports.Console(),
     ],
-    format: winston.format.combine(
-    // winston.format.label({
-    //   label: `Label🏷️`,
-    // }),
-    winston.format.colorize({
-        colors: { info: "green", warn: "blue", error: "red", debug: "gray" },
+    format: winston.format.combine(winston.format.label({
+        label: `Label🏷️`,
+    }), winston.format.colorize({
+        colors: { info: "green", warn: "blue", error: "red", debug: "cyan" },
     }), winston.format.timestamp({
         format: "MMM-DD-YYYY HH:mm:ss",
     }), winston.format.printf((info) => `${info.level}: ${[info.timestamp]}: ${info.message}`)),

@@ -98,6 +98,7 @@ io.on(CONNECTION, (socket) => {
       chatMessageBody,
       socket,
       (message) => {
+        logger.info(`message is ${JSON.stringify(message)}`);
         io.to(username).emit(CHAT, message);
       }
     );

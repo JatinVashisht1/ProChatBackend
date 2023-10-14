@@ -98,11 +98,10 @@ const isTokenValid = (token) => {
  * @returns The username extracted from the token.
  */
 export const getUsernameFromToken = (token) => {
-    var _a;
     const verification = jsonwebtoken.verify(token, PUB_KEY, {
         algorithms: ["RS256"],
     });
-    return ((_a = verification.sub) === null || _a === void 0 ? void 0 : _a.toString()) || "";
+    return verification.sub?.toString() || "";
 };
 /**
  * Express middleware for authentication.
