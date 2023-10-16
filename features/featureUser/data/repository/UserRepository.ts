@@ -13,6 +13,29 @@ import { injectable, singleton } from "tsyringe";
  */
 export class UserRepository implements IUserRepository {
   constructor() {}
+  async searchUser(username: string): Promise<UserEntity[]> {
+    const users = await UserModel.find({
+      username: {
+        $regex: username
+      }
+    }).exec()
+
+    const userEntityList: UserEntity[] = [];
+
+    users.forEach((user) => {
+      const userEntity: UserEntity = {
+        username: user.username,
+        password: {
+          hash: user.password.hash,
+          salt: user.password.salt,
+        }
+      }
+
+      userEntityList.push(userEntity);
+    })
+
+    return userEntityList;
+  }
 
   /**
    * create new user of type `UserEntity`

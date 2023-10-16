@@ -11,9 +11,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { autoInjectable, inject } from "tsyringe";
-import { I_USER_REPOSITORY } from "../../../../common/Constants";
+import { I_USER_REPOSITORY } from '../../../../common/Constants.js';
 import createHttpError from "http-errors";
-import { genPassword, issueJWT } from "../../../common/utils/jwtUtils";
+import { genPassword, issueJWT } from '../../../common/utils/jwtUtils.js';
 export let CreateUserController = class CreateUserController {
     userRepository;
     constructor(userRepository) {

@@ -11,9 +11,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import { autoInjectable, inject } from "tsyringe";
-import { I_CHAT_MESSAGE_REPOSITORY } from "../../../../common/Constants";
-import { assertIsDefined } from "../../../../common/utils/assertIsDefined";
-export let GetChatMessagesBetween2Usernames = class GetChatMessagesBetween2Usernames {
+import { I_CHAT_MESSAGE_REPOSITORY } from '../../../../common/Constants.js';
+import { assertIsDefined } from '../../../../common/utils/assertIsDefined.js';
+export let GetChatMessagesBetween2UsernamesController = class GetChatMessagesBetween2UsernamesController {
     chatMessageRepository;
     constructor(chatMessageRepository) {
         this.chatMessageRepository = chatMessageRepository;
@@ -21,7 +21,7 @@ export let GetChatMessagesBetween2Usernames = class GetChatMessagesBetween2Usern
     getChatMessagesBetween2UsernamesRequestHandler = async (req, res, next) => {
         assertIsDefined(this.chatMessageRepository);
         const { username1, username2 } = req.body;
-        const chatMessagesBetweenUser1AndUser2 = await this.chatMessageRepository.getChatMessagesBetween2Usernames(username1, username1);
+        const chatMessagesBetweenUser1AndUser2 = await this.chatMessageRepository.getChatMessagesBetween2Usernames(username1, username2);
         const _chatMessagesResponse = {
             username1: username1,
             username2: username2,
@@ -30,8 +30,8 @@ export let GetChatMessagesBetween2Usernames = class GetChatMessagesBetween2Usern
         return res.status(200).json(_chatMessagesResponse);
     };
 };
-GetChatMessagesBetween2Usernames = __decorate([
+GetChatMessagesBetween2UsernamesController = __decorate([
     autoInjectable(),
     __param(0, inject(I_CHAT_MESSAGE_REPOSITORY)),
     __metadata("design:paramtypes", [Object])
-], GetChatMessagesBetween2Usernames);
+], GetChatMessagesBetween2UsernamesController);

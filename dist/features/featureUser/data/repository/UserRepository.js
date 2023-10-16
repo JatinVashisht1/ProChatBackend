@@ -8,10 +8,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import createHttpError from "http-errors";
-import { UserModel } from "../database/UserModel";
+import { UserModel } from '../database/UserModel.js';
 import { injectable, singleton } from "tsyringe";
 export let UserRepository = class UserRepository {
     constructor() { }
+    async searchUser(username) {
+        const users = await UserModel.find({
+            username: {
+                $regex: username
+            }
+        }).exec();
+        const userEntityList = [];
+        users.forEach((user) => {
+            const userEntity = {
+                username: user.username,
+                password: {
+                    hash: user.password.hash,
+                    salt: user.password.salt,
+                }
+            };
+            userEntityList.push(userEntity);
+        });
+        return userEntityList;
+    }
     /**
      * create new user of type `UserEntity`
      * @param userEntity new user of type `UserEntity`

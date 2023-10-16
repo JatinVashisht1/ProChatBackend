@@ -5,8 +5,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { injectable, singleton } from "tsyringe";
-import { ChatMessageModel } from "../database/ChatMessageModel";
-import { logger } from "../../../../common/winstonLoggerConfiguration";
+import { ChatMessageModel } from '../database/ChatMessageModel.js';
+import { logger } from '../../../../common/winstonLoggerConfiguration.js';
 /**
  * ChatMessageRepository is responsible for interacting with the chat message data storage.
  */
@@ -18,11 +18,8 @@ export let ChatMessageRepository = class ChatMessageRepository {
      * @returns promise of array of ChatMessageEntity, containing messages between user1 and user2
      */
     async getChatMessagesBetween2Usernames(user1, user2) {
-        // const messagesFromUser1AndUser2 = await ChatMessageModel.find({
-        //   $or: [{senderUsername: user1, receiverUsername: user2}, {senderUsername: user2, receiverUsername: user1}]
-        // })
         const messagesFromUser1AndUser2 = await ChatMessageModel.find({
-            $or: [{ senderUsername: user1 }]
+            $or: [{ senderUsername: user1, receiverUsername: user2 }, { senderUsername: user2, receiverUsername: user1 }]
         });
         const messageEntityListUser1AndUser2 = messagesFromUser1AndUser2.map((message) => {
             return {
@@ -31,24 +28,6 @@ export let ChatMessageRepository = class ChatMessageRepository {
                 message: message.message,
             };
         });
-        /*
-        const messagesFromUser2 = await ChatMessageModel.find({
-          from: user2,
-          to: user1,
-        })
-    
-        const messageEntityListUser2: ChatMessageEntity[] = messagesFromUser2.map((message) => {
-          return {
-            senderUsername: message.senderUsername,
-            receiverUsername: message.receiverUsername,
-            message: message.message,
-          }
-        })
-        
-        messageEntityListUser2.forEach((messageEntity) => {
-          messageEntityListUser1.push(messageEntity);
-        })
-        */
         return messageEntityListUser1AndUser2;
     }
     /**

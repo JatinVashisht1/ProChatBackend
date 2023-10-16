@@ -12,48 +12,34 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import { autoInjectable, inject } from "tsyringe";
 import { I_USER_REPOSITORY } from '../../../../common/Constants.js';
-import createHttpError from "http-errors";
 import { assertIsDefined } from '../../../../common/utils/assertIsDefined.js';
-import { validPassword, issueJWT } from '../../../common/utils/jwtUtils.js';
-export let SignInController = class SignInController {
+import createHttpError from "http-errors";
+export let SearchUserController = class SearchUserController {
     userRepository;
     constructor(userRepository) {
         this.userRepository = userRepository;
     }
-    /**
-     * Request handler to for signing in a user ("/user/signin")
-     * @param req Express Request object
-     * @param res Express Response object
-     * @param next Express Next Function
-     * @returns void
-     */
-    signInHandler = async (req, res, next) => {
+    searchUserHandler = async (req, res, next) => {
+        assertIsDefined(this.userRepository);
+        const searchUsername = req.body.username;
         try {
-            assertIsDefined(this.userRepository);
-            const { username, password } = req.body;
-            if (!username || !password) {
-                throw createHttpError(412, "In sufficient credentials");
+            assertIsDefined(searchUsername);
+            if (searchUsername.length == 0) {
+                throw createHttpError(400, "username is required");
             }
-            const userEntity = await this.userRepository.getUser(username);
-            // logger.info(JSON.stringify(userEntity));
-            const passwordHashed = {
-                salt: userEntity.password.salt,
-                hash: userEntity.password.hash,
-            };
-            const isPasswordValid = validPassword(password, passwordHashed);
-            if (!isPasswordValid) {
-                throw createHttpError(401, "invalid username or password");
-            }
-            const jwt = issueJWT(username);
-            return res.status(200).json({ success: true, token: jwt.token });
+            const users = (await this.userRepository.searchUser(searchUsername)).map((user) => {
+                return user.username;
+            });
+            // logger.info(`search username: ${searchUsername}`)
+            return res.status(200).json({ searchString: searchUsername, users: users });
         }
         catch (error) {
-            next(error);
+            return next(error);
         }
     };
 };
-SignInController = __decorate([
+SearchUserController = __decorate([
     autoInjectable(),
     __param(0, inject(I_USER_REPOSITORY)),
     __metadata("design:paramtypes", [Object])
-], SignInController);
+], SearchUserController);

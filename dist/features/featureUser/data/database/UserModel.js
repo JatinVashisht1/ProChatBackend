@@ -22,4 +22,5 @@ const UserSchema = new Schema({
 }, {
     timestamps: true,
 });
+UserSchema.index({ username: 'text' });
 export const UserModel = model("User", UserSchema);

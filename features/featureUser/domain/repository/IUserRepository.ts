@@ -16,4 +16,10 @@ export interface IUserRepository {
   updatePassword(username: string, newPassword: PasswordType): Promise<Boolean>;
 
   getUser(username: string): Promise<UserEntity>;
+
+  /**
+   * Search a user by username
+   * @param username username of the user to search for
+   */
+  searchUser(username: string): Promise<UserEntity[]>;
 }

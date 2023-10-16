@@ -1,8 +1,8 @@
 import "dotenv/config";
-import { httpServer } from "./features/app";
-import { env } from "./common/utils/envalidUtils";
+import { httpServer } from './features/app.js';
+import { env } from './common/utils/envalidUtils.js';
 import mongoose from "mongoose";
-import { logger } from "./common/winstonLoggerConfiguration";
+import { logger } from './common/winstonLoggerConfiguration.js';
 (() => {
     const PORT = env.PORT || 5000;
     const DB_STRING = env.DB_STRING;

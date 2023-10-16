@@ -1,4 +1,4 @@
 "use strict";
-// import { IMapper } from '../../../../common/IMapper';
+// import { IMapper } from '../../../../common/IMapper.js';
 // class UserMapper implements IMapper<User {
 // }

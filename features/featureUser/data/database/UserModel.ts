@@ -29,6 +29,8 @@ const UserSchema = new Schema(
   }
 );
 
+UserSchema.index({username: 'text'})
+
 export type UserType = InferSchemaType<typeof UserSchema>;
 
 export const UserModel = model<UserType>("User", UserSchema);

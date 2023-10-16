@@ -1,12 +1,14 @@
 import { Router } from "express";
-import "../../../../di/provideDependencices";
-import { CreateUserController } from "../controller/CreateUserController";
-import { SignInController } from "../controller/SignInUserController";
-import { authMiddleware } from "../../../common/utils/jwtUtils";
+import '../../../../di/provideDependencices.js';
+import { CreateUserController } from '../controller/CreateUserController.js';
+import { SignInController } from '../controller/SignInUserController.js';
+import { authMiddleware } from '../../../common/utils/jwtUtils.js';
+import { SearchUserController } from '../controller/SearchUserController.js';
 const router = Router();
 router.post("/signup", new CreateUserController().createUserHandler);
 router.post("/signin", new SignInController().signInHandler);
 router.get("/", authMiddleware, (req, res, next) => {
     return res.status(200).json({ success: true });
 });
+router.get("/searchUser", authMiddleware, new SearchUserController().searchUserHandler);
 export default router;

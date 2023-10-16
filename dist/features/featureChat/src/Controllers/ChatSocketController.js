@@ -10,11 +10,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { CHAT } from "../../../../common/Events";
-import { logger } from "../../../../common/winstonLoggerConfiguration";
+import { CHAT } from '../../../../common/Events.js';
+import { logger } from '../../../../common/winstonLoggerConfiguration.js';
 import { autoInjectable, inject } from "tsyringe";
-import { I_CHAT_MESSAGE_REPOSITORY } from "../../../../common/Constants";
-import { assertIsDefined } from "../../../../common/utils/assertIsDefined";
+import { I_CHAT_MESSAGE_REPOSITORY } from '../../../../common/Constants.js';
+import { assertIsDefined } from '../../../../common/utils/assertIsDefined.js';
 /**
  * Controller for handling chat socket events.
  */
