@@ -8,7 +8,7 @@ import { UserEntity } from "../../domain/model/UserEntity";
 import { logger } from "../../../../common/winstonLoggerConfiguration";
 
 interface searchUserRequestBody {
-    username: string;
+    usernameBody: string;
 }
 
 @autoInjectable()
@@ -18,13 +18,13 @@ export class SearchUserController {
     searchUserHandler: RequestHandler<unknown, unknown, searchUserRequestBody, unknown> = async (req, res, next) => {
         assertIsDefined(this.userRepository);
         
-        const searchUsername = req.body.username;
+        const searchUsername = req.body.usernameBody;
 
         try {
-            assertIsDefined(searchUsername);
-            if (searchUsername.length == 0) {
+            if (!searchUsername || searchUsername.length == 0) {
                 throw createHttpError(400, "username is required");
             }
+            assertIsDefined(searchUsername);
 
             const users: string[] = (await this.userRepository.searchUser(searchUsername)).map((user)=>{
                 return user.username;
@@ -36,6 +36,4 @@ export class SearchUserController {
             return next(error);
         }
     }
-
-
 }
