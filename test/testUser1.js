@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import io from "socket.io-client";
 import { CHAT } from "./common/Events.js";
 import { BEARER_TOKEN_User1 } from "./common/Constants.js";
@@ -7,7 +8,7 @@ import { BEARER_TOKEN_User1 } from "./common/Constants.js";
 const socket = io("http://localhost:5000/", {
   auth: { token: BEARER_TOKEN_User1 },
 });
-const username = "testbase";
+// const username = "testbase";
 const friend1 = "def";
 
 // socket.auth = {BEARER_TOKEN};

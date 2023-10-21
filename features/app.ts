@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response } from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { CHAT, CONNECTION } from "../common/Events";
@@ -14,14 +14,9 @@ import { ChatSocketController } from "./featureChat/src/Controllers/ChatSocketCo
 import userRouter from "./featureUser/src/routes/userRoutes";
 import createHttpError, { isHttpError } from "http-errors";
 import { logger } from "../common/winstonLoggerConfiguration";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
 import { getTokenParts, getUsernameFromToken } from "./common/utils/jwtUtils";
 import "../di/provideDependencices";
-import { container } from "tsyringe";
 import { chatRouter } from "./featureChat/src/routes/chatRoutes";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const app = express();
 
@@ -41,7 +36,7 @@ app.use((_req, _res, next) => {
   next(createHttpError(404, "Endpoint not found"));
 });
 
-app.use((error: unknown, _req: Request, res: Response, next: NextFunction) => {
+app.use((error: unknown, _req: Request, res: Response) => {
   logger.error(error);
   let errorMessage = "An unknown error occurred.";
   let statusCode = 500;

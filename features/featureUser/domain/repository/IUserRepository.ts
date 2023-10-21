@@ -13,7 +13,7 @@ export interface IUserRepository {
    * @param username username of user.
    * @param newPassword new password of user.
    */
-  updatePassword(username: string, newPassword: PasswordType): Promise<Boolean>;
+  updatePassword(username: string, newPassword: PasswordType): Promise<boolean>;
 
   getUser(username: string): Promise<UserEntity>;
 

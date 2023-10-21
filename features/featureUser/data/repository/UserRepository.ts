@@ -1,5 +1,4 @@
 import createHttpError from "http-errors";
-import { logger } from "../../../../common/winstonLoggerConfiguration";
 import { PasswordType } from "../../domain/model/PasswordType";
 import { UserEntity } from "../../domain/model/UserEntity";
 import { IUserRepository } from "../../domain/repository/IUserRepository";
@@ -13,12 +12,18 @@ import { injectable, singleton } from "tsyringe";
  */
 export class UserRepository implements IUserRepository {
   constructor() {}
+
+  /**
+   * 
+   * @param username username of user to seearch for
+   * @returns `UserEntity` list 
+   */
   async searchUser(username: string): Promise<UserEntity[]> {
     const users = await UserModel.find({
       username: {
         $regex: username
       }
-    }).exec()
+    }).exec();
 
     const userEntityList: UserEntity[] = [];
 
@@ -29,10 +34,10 @@ export class UserRepository implements IUserRepository {
           hash: user.password.hash,
           salt: user.password.salt,
         }
-      }
+      };
 
       userEntityList.push(userEntity);
-    })
+    });
 
     return userEntityList;
   }
@@ -61,7 +66,7 @@ export class UserRepository implements IUserRepository {
   async updatePassword(
     username: string,
     newPassword: PasswordType
-  ): Promise<Boolean> {
+  ): Promise<boolean> {
     const userExist = await UserModel.findOne({ username: username });
     if (!userExist) throw createHttpError(404, "User not found");
 

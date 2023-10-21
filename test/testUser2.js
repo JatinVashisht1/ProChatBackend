@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import io from "socket.io-client";
 import { CHAT } from "./common/Events.js";
 import { BEARER_TOKEN_User2 } from "./common/Constants.js";

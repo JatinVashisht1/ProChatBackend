@@ -7,7 +7,6 @@ import createHttpError from "http-errors";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { PasswordType } from "../../featureUser/domain/model/PasswordType";
-import { logger } from "../../../common/winstonLoggerConfiguration";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

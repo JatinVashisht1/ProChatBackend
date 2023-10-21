@@ -4,8 +4,6 @@ import { I_USER_REPOSITORY } from "../../../../common/Constants";
 import { RequestHandler } from "express";
 import { UserEntity } from "../../domain/model/UserEntity";
 import createHttpError from "http-errors";
-import { logger } from "../../../../common/winstonLoggerConfiguration";
-import { assertIsDefined } from "../../../../common/utils/assertIsDefined";
 import { genPassword, issueJWT } from "../../../common/utils/jwtUtils";
 
 interface createUserBody {

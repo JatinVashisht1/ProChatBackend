@@ -5,7 +5,6 @@ import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import { PasswordType } from "../../domain/model/PasswordType";
 import { assertIsDefined } from "../../../../common/utils/assertIsDefined";
-import { logger } from "../../../../common/winstonLoggerConfiguration";
 import { validPassword, issueJWT } from "../../../common/utils/jwtUtils";
 
 interface signInUserBody {
