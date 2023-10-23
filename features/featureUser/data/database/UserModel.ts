@@ -23,6 +23,12 @@ const UserSchema = new Schema(
       type: PasswordSchema,
       required: true,
     },
+
+    about: {
+      type: String,
+      required: false,
+      default: ""
+    }
   },
   {
     timestamps: true,

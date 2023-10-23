@@ -4,6 +4,7 @@ import { UserEntity } from "../../domain/model/UserEntity";
 import { IUserRepository } from "../../domain/repository/IUserRepository";
 import { UserModel } from "../database/UserModel";
 import { injectable, singleton } from "tsyringe";
+import { UserProfile } from "../../domain/model/UserProfile";
 
 @injectable()
 @singleton()
@@ -12,6 +13,28 @@ import { injectable, singleton } from "tsyringe";
  */
 export class UserRepository implements IUserRepository {
   constructor() {}
+
+  async getUserProfile(username: string): Promise<UserProfile> {
+    const userDocument = await UserModel.findOne({
+      username: username,
+    }).exec();
+
+    if (!userDocument) {
+      throw createHttpError(404, `user with username ${username} not exist`);
+    }
+
+    let about = userDocument?.about;
+
+    if (!about) about = "";
+      
+    const userProfile: UserProfile = {
+      username: username,
+      about: about,
+    };
+
+    return userProfile;
+
+  }
 
   /**
    * 

@@ -32,7 +32,7 @@ export class GetChatAccountsOfUserController {
         }
 
         const userEntityList =
-        this.chatMessageRepository.getChatAccountsOfUser(username);
+        await this.chatMessageRepository.getChatAccountsOfUser(username);
 
         const jsonResponse = {
           user: username,

@@ -21,21 +21,22 @@ export class ChatMessageRepository implements IChatMessageRepository {
       $or: [{ senderUsername: user }, { receiverUsername: user }],
     }).exec();
 
-    logger.info(`chatmessagerepo: getchataccounts: user: ${user}`);
+    const userSet: Set<string> = new Set();
+    const userModelList: UserEntity[] = [];
 
-    const userModelList: UserEntity[] = chatEntityList.map((chatEntity) => {
-      const username =
-        chatEntity.senderUsername === user
-          ? chatEntity.receiverUsername
-          : chatEntity.senderUsername;
+    chatEntityList.forEach((chatEntity) => {
+      const username = (chatEntity.senderUsername === user)? chatEntity.receiverUsername: chatEntity.senderUsername;
+      
+      if (!userSet.has(username)) {
+        userModelList.push({
+          username: username
+        });
 
-      const userEntity: UserEntity = {
-        username: username,
-      };
-
-      return userEntity;
+        userSet.add(username);
+      }
     });
-
+    
+    // logger.info(`chatmessagerepo: getchataccounts: userModelList: ${userModelList}`);
     return userModelList;
   }
 

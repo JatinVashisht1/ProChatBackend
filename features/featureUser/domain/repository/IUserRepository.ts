@@ -1,5 +1,6 @@
 import { PasswordType } from "../model/PasswordType";
 import { UserEntity } from "../model/UserEntity";
+import { UserProfile } from "../model/UserProfile";
 
 export interface IUserRepository {
   /**
@@ -15,6 +16,11 @@ export interface IUserRepository {
    */
   updatePassword(username: string, newPassword: PasswordType): Promise<boolean>;
 
+  /**
+   * Returns `UserEntity` containing username and password of user.
+   * `RETURNS PROMISE`
+   * @param username username of user
+   */
   getUser(username: string): Promise<UserEntity>;
 
   /**
@@ -22,4 +28,10 @@ export interface IUserRepository {
    * @param username username of the user to search for
    */
   searchUser(username: string): Promise<UserEntity[]>;
+
+  /**
+   * Returns `UserProfile` of user containing username, about user
+   * @param username username of user
+   */
+  getUserProfile(username: string): Promise<UserProfile>;
 }

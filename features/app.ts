@@ -37,11 +37,12 @@ app.use((_req, _res, next) => {
 });
 
 app.use((error: unknown, _req: Request, res: Response) => {
-  logger.error(error);
+  logger.error(`error is ${error}`);
   let errorMessage = "An unknown error occurred.";
   let statusCode = 500;
 
   if (isHttpError(error)) {
+    logger.error(`error message is ${errorMessage}`);
     statusCode = error.status;
     errorMessage = error.message;
   }
