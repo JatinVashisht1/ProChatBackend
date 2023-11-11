@@ -17,11 +17,14 @@ import { logger } from "../common/winstonLoggerConfiguration";
 import { getTokenParts, getUsernameFromToken } from "./common/utils/jwtUtils";
 import "../di/provideDependencices";
 import { chatRouter } from "./featureChat/src/routes/chatRoutes";
+import morgan from "morgan";
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(morgan('combined'));
 
 app.get("/", (req, res) => {
   // logger.info("user requested default page");
@@ -67,7 +70,7 @@ io.use((socket, next) => {
 
     const tokenPart = getTokenParts(token);
     const username = getUsernameFromToken(tokenPart[1]);
-    // logger.info(`${username}`);
+    logger.info(`username in socket middlewware ${username}`);
 
     socket.data.username = username;
 
@@ -86,7 +89,7 @@ io.use((socket, next) => {
 
 io.on(CONNECTION, (socket) => {
   const { username } = socket.data;
-
+  logger.info(`username in connection socket event is ${username}`);
   socket.join(username);
 
   socket.on(CHAT, (chatMessageBody: ChatMessageBody) => {
@@ -100,9 +103,9 @@ io.on(CONNECTION, (socket) => {
     );
   });
 
-  const chatMessageBody: ChatMessageBody = {
-    to: username,
-    message: "hello",
-  };
-  socket.to(username).emit(CHAT, chatMessageBody);
+  // const chatMessageBody: ChatMessageBody = {
+  //   to: username,
+  //   message: "hello",
+  // };
+  // socket.to(username).emit(CHAT, chatMessageBody);
 });

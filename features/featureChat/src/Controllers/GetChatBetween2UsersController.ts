@@ -3,17 +3,17 @@ import { I_CHAT_MESSAGE_REPOSITORY } from "../../../../common/Constants";
 import { IChatMessageRepository } from "../../domain/repository/IChatMessageRepository";
 import { RequestHandler } from "express";
 import { assertIsDefined } from "../../../../common/utils/assertIsDefined";
-import { ChatMessageEntity } from "../../domain/model/ChatMessageEntity";
+import { logger } from "../../../../common/winstonLoggerConfiguration";
+import { DomainChatMessageModel } from "../../domain/model/DomainChatMessageModel";
 
-interface getChatMessagesBetween2UsernamesBody {
-  username1: string;
-  username2: string;
-}
+// interface getChatMessagesBetween2UsernamesUrlBody {
+//   anotherUsername: string;
+// }
 
 interface chatMessageResponse {
   username1: string;
   username2: string;
-  messages: ChatMessageEntity[];
+  messages: DomainChatMessageModel[];
 }
 
 @autoInjectable()
@@ -24,14 +24,16 @@ export class GetChatMessagesBetween2UsernamesController {
   ) {}
 
   getChatMessagesBetween2UsernamesRequestHandler: RequestHandler<
-    unknown,
+    {anotherUsername: string},
     chatMessageResponse,
-    getChatMessagesBetween2UsernamesBody,
+    unknown,
     unknown
   > = async (req, res) => {
       assertIsDefined(this.chatMessageRepository);
-
-      const { username1, username2 } = req.body;
+      
+      const username1 = req.params.anotherUsername;
+      const username2 = req.username;
+      logger.info(`username is ${username2}`);
       const chatMessagesBetweenUser1AndUser2 =
       await this.chatMessageRepository.getChatMessagesBetween2Usernames(
         username1,
@@ -39,10 +41,12 @@ export class GetChatMessagesBetween2UsernamesController {
       );
 
       const _chatMessagesResponse: chatMessageResponse = {
-        username1: username1,
         username2: username2,
+        username1: username1,
         messages: chatMessagesBetweenUser1AndUser2,
       };
+
+      // logger.info(`returned: ${JSON.stringify(_chatMessagesResponse)}`);
 
       return res.status(200).json(_chatMessagesResponse);
     };

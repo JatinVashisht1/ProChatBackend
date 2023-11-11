@@ -4,6 +4,9 @@ import { ChatMessageEntity } from "../../domain/model/ChatMessageEntity";
 import { ChatMessageModel } from "../database/ChatMessageModel";
 import { logger } from "../../../../common/winstonLoggerConfiguration";
 import { UserEntity } from "../../domain/model/UserEntity";
+import { DomainChatMessageModel } from "../../domain/model/DomainChatMessageModel";
+import { DeliveryStatus } from "../../utility/DeliveryStatusType";
+import { ChatMessageDbEntity } from "../database/ChatMessageDbEntity";
 
 /**
  * ChatMessageRepository is responsible for interacting with the chat message data storage.
@@ -49,20 +52,34 @@ export class ChatMessageRepository implements IChatMessageRepository {
   async getChatMessagesBetween2Usernames(
     user1: string,
     user2: string
-  ): Promise<ChatMessageEntity[]> {
+  ): Promise<DomainChatMessageModel[]> {
     const messagesFromUser1AndUser2 = await ChatMessageModel.find({
       $or: [
         { senderUsername: user1, receiverUsername: user2 },
         { senderUsername: user2, receiverUsername: user1 },
       ],
-    }).exec();
+    },).exec();
 
-    const messageEntityListUser1AndUser2: ChatMessageEntity[] =
+    const messageEntityListUser1AndUser2: DomainChatMessageModel[] =
       messagesFromUser1AndUser2.map((message) => {
+        const createdAt = message.createdAt;
+        const date = createdAt.getDate().toString();
+        const time = createdAt.getTime().toString();
+        const day = createdAt.getDay().toString();
+        const month = createdAt.getMonth().toString();
+        const year = createdAt.getFullYear().toString();
+
         return {
           senderUsername: message.senderUsername,
           receiverUsername: message.receiverUsername,
           message: message.message,
+          createdDate: date,
+          createdDay: day,
+          createdTime: time,
+          createdMonth: month,
+          createdYear: year,
+          messageId: message.messageId.toString(),
+          deliveryStatus: message.deliveryStatus as DeliveryStatus,
         };
       });
 
@@ -75,8 +92,36 @@ export class ChatMessageRepository implements IChatMessageRepository {
    * @returns A promise that resolves when the operation is completed.
    */
   async addChatMessage(message: ChatMessageEntity): Promise<void> {
-    const savedResult = await ChatMessageModel.create(message);
-    logger.info(`saved result is ${savedResult}`);
+
+    try {
+      logger.info(`message in repo: ${JSON.stringify(message)}`);
+      
+      const epochSeconds = message.createdAt;
+
+      const date = new Date(epochSeconds*1000).toDateString();
+      logger.info(`date is ${epochSeconds}`);
+      
+      const chatDbEntity: ChatMessageDbEntity = {
+        message: message.message,
+        deliveryStatus: message.deliveryStatus,
+        receiverUsername: message.receiverUsername,
+        senderUsername: message.senderUsername,
+        messageId: message.messageId,
+        createdAt: new Date(date),
+      };
+      
+      const savedResult = await ChatMessageModel.create({
+        senderUsername: chatDbEntity.senderUsername,
+        receiverUsername: chatDbEntity.receiverUsername,
+        deliveryStatus: chatDbEntity.deliveryStatus,
+        createdAt: date,
+        messageId: chatDbEntity.messageId,
+        message: chatDbEntity.message,
+      });
+      logger.info(`saved result is ${savedResult}`);
+    } catch (error) { 
+      logger.error(`error inserting chat message ${error}`);
+    }
   }
 
   /**
@@ -85,17 +130,31 @@ export class ChatMessageRepository implements IChatMessageRepository {
    * @param username - The username to retrieve chat messages for.
    * @returns A promise that resolves to an array of ChatMessageEntity representing the chat messages.
    */
-  async getChatMessages(username: string): Promise<ChatMessageEntity[]> {
+  async getChatMessages(username: string): Promise<DomainChatMessageModel[]> {
     const chatMessages = await ChatMessageModel.find({
       $or: [{ senderUsername: username }, { receiverUsername: username }],
     });
 
     // Map Mongoose documents to ChatMessageEntity
     const chatMessageEntities = chatMessages.map((chatMessage) => {
+      const createdAt = chatMessage.createdAt;
+      const date = createdAt.getDate().toString();
+      const time = createdAt.getTime().toString();
+      const day = createdAt.getDay().toString();
+      const month = createdAt.getMonth().toString();
+      const year = createdAt.getFullYear().toString();
+
       return {
         senderUsername: chatMessage.senderUsername,
         receiverUsername: chatMessage.receiverUsername,
         message: chatMessage.message,
+        createdDate: date,
+        createdDay: day,
+        createdTime: time,
+        createdMonth: month,
+        createdYear: year,
+        messageId: chatMessage.messageId.toString(),
+        deliveryStatus: chatMessage.deliveryStatus as DeliveryStatus,
       };
     });
 

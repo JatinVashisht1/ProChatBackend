@@ -174,19 +174,19 @@ export const authMiddleware: RequestHandler = async (
 
         req.jwt = tokenParts[1];
         req.token = tokenPartsString;
-        req.body.username = username;
+        req.username = username;
 
-        next();
+        return next();
       } catch (error) {
-        next(
+        return next(
           createHttpError(401, "You are not authorized to visit this route.")
         );
       }
     } else {
-      next(createHttpError(401, "You are not authorized to visit this route."));
+      return next(createHttpError(401, "You are not authorized to visit this route."));
     }
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 

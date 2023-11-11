@@ -6,9 +6,9 @@ import createHttpError from "http-errors";
 import { logger } from "../../../../common/winstonLoggerConfiguration";
 import { assertIsDefined } from "../../../../common/utils/assertIsDefined";
 
-interface GetChatAccountsOfUserBody {
-  username: string;
-}
+// interface GetChatAccountsOfUserBody {
+//   username: string;
+// }
 
 @autoInjectable()
 export class GetChatAccountsOfUserController {
@@ -20,11 +20,11 @@ export class GetChatAccountsOfUserController {
   getChatAccountsOfUserRequestHandler: RequestHandler<
     unknown,
     unknown,
-    GetChatAccountsOfUserBody,
+    unknown,
     unknown
   > = async (req, res, next) => {
       try {
-        const username = req.body.username;
+        const username = req.username;
         assertIsDefined(this.chatMessageRepository);
 
         if (!username || username.length === 0) {

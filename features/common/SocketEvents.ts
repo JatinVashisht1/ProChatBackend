@@ -1,3 +1,5 @@
+import { DeliveryStatus } from "../featureChat/utility/DeliveryStatusType";
+
 export interface ServerToClientEvents {
   noArg: () => void;
   basicEmit: (a: number, b: string, c: Buffer) => void;
@@ -5,7 +7,14 @@ export interface ServerToClientEvents {
   chat: (chatMessageBody: ChatMessageBody) => string;
 }
 
-export type ChatMessageBody = { to: string; message: string };
+export type ChatMessageBody = { 
+  from: string;
+  to: string; 
+  message: string; 
+  createdAt: number; 
+  deliveryStatus: DeliveryStatus; 
+  messageId: string;
+};
 
 export interface ClientToServerEvents {
   chat: (chatMessageBody: ChatMessageBody) => void;

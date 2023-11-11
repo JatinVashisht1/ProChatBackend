@@ -28,6 +28,12 @@ const UserSchema = new Schema(
       type: String,
       required: false,
       default: ""
+    },
+    
+    connectivityStatus: {
+      type: String,
+      enum: ['online', 'offline'],
+      required: true,
     }
   },
   {

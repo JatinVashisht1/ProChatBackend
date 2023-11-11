@@ -6,7 +6,7 @@ import { GetChatAccountsOfUserController } from "../Controllers/GetChatAccountsO
 const router = Router();
 
 router.get(
-  "/getuserschat",
+  "/getuserschat/:anotherUsername",
   authMiddleware,
   new GetChatMessagesBetween2UsernamesController()
     .getChatMessagesBetween2UsernamesRequestHandler
