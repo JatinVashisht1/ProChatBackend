@@ -6,7 +6,6 @@ import { I_CHAT_MESSAGE_REPOSITORY } from "../../../../common/Constants";
 import { IChatMessageRepository } from "../../domain/repository/IChatMessageRepository";
 import { assertIsDefined } from "../../../../common/utils/assertIsDefined";
 import { ChatMessageEntity } from "../../domain/model/ChatMessageEntity";
-import { UUID } from "crypto";
 import { logger } from "../../../../common/winstonLoggerConfiguration";
 
 /**
@@ -45,14 +44,9 @@ export class ChatSocketController {
     // logger.info(`chat message body ${JSON.stringify(json)}`);
     logger.info(`chat message body ${chatMessageBody} and type ${typeof json}`);
 
-    // const { to, message, createdAt, deliveryStatus, messageId } = chatMessageBody;
-    const from = socket.data.username;
-
     // logger.info(`chatMessageBody: ${to}`);
 
     socket.to(json.to).emit(CHAT, json); // Emit message to recipient
-
-    const messageIdUUID = chatMessageBody["messageId"];
 
     const chatMessageEntity: ChatMessageEntity = {
       senderUsername: json.from,
@@ -67,14 +61,14 @@ export class ChatSocketController {
 
     await this.chatRepository.addChatMessage(chatMessageEntity);
 
-    const selfMessageBody: ChatMessageBody = {
-      to: json.to,
-      message: json.message,
-      createdAt: json.createdAt,
-      deliveryStatus: json.deliveryStatus,
-      from: from,
-      messageId: json.messageId,
-    };
+    // const selfMessageBody: ChatMessageBody = {
+    //   to: json.to,
+    //   message: json.message,
+    //   createdAt: json.createdAt,
+    //   deliveryStatus: json.deliveryStatus,
+    //   from: from,
+    //   messageId: json.messageId,
+    // };
 
     // logger.debug(`message is ${selfMessageBody}`)
 

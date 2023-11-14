@@ -28,8 +28,8 @@ export class ChatMessageRepository implements IChatMessageRepository {
     const userModelList: UserEntity[] = [];
 
     chatEntityList.forEach((chatEntity) => {
-      const username = (chatEntity.senderUsername === user)? chatEntity.receiverUsername: chatEntity.senderUsername;
-      
+      const username = (chatEntity.senderUsername === user) ? chatEntity.receiverUsername : chatEntity.senderUsername;
+
       if (!userSet.has(username)) {
         userModelList.push({
           username: username
@@ -38,7 +38,7 @@ export class ChatMessageRepository implements IChatMessageRepository {
         userSet.add(username);
       }
     });
-    
+
     // logger.info(`chatmessagerepo: getchataccounts: userModelList: ${userModelList}`);
     return userModelList;
   }
@@ -87,6 +87,45 @@ export class ChatMessageRepository implements IChatMessageRepository {
   }
 
   /**
+   * returns 20 chat messages between two usernames/users in a paginated form
+   * @param user1 fist username
+   * @param user2 second username
+   * @param startIndex index to start giving messages from
+   */
+  async getChatMessagesBetween2UsersPaginated(user1: string, user2: string, startIndex: number): Promise<DomainChatMessageModel[]> {
+    const messagesDbEntityList = await ChatMessageModel.find({
+      $or: [{ senderUsername: user1, receiverUsername: user2 }, { senderUsername: user2, receiverUsername: user1 }]
+    })
+      .skip((startIndex - 1) * 10)
+      .limit(10)
+      .exec();
+
+    const domainChatMessageModelList = messagesDbEntityList.map((message) => {
+      const createdAt = message.createdAt;
+      const date = createdAt.getDate().toString();
+      const time = createdAt.getTime().toString();
+      const day = createdAt.getDay().toString();
+      const month = createdAt.getMonth().toString();
+      const year = createdAt.getFullYear().toString();
+
+      return {
+        senderUsername: message.senderUsername,
+        receiverUsername: message.receiverUsername,
+        message: message.message,
+        createdDate: date,
+        createdDay: day,
+        createdTime: time,
+        createdMonth: month,
+        createdYear: year,
+        messageId: message.messageId.toString(),
+        deliveryStatus: message.deliveryStatus as DeliveryStatus,
+      };
+    });
+
+    return domainChatMessageModelList;
+  }
+
+  /**
    * Add a chat message to the data storage.
    * @param message - The chat message to be added.
    * @returns A promise that resolves when the operation is completed.
@@ -95,12 +134,12 @@ export class ChatMessageRepository implements IChatMessageRepository {
 
     try {
       logger.info(`message in repo: ${JSON.stringify(message)}`);
-      
+
       const epochSeconds = message.createdAt;
 
-      const date = new Date(epochSeconds*1000).toDateString();
+      const date = new Date(epochSeconds * 1000).toDateString();
       logger.info(`date is ${epochSeconds}`);
-      
+
       const chatDbEntity: ChatMessageDbEntity = {
         message: message.message,
         deliveryStatus: message.deliveryStatus,
@@ -109,7 +148,7 @@ export class ChatMessageRepository implements IChatMessageRepository {
         messageId: message.messageId,
         createdAt: new Date(date),
       };
-      
+
       const savedResult = await ChatMessageModel.create({
         senderUsername: chatDbEntity.senderUsername,
         receiverUsername: chatDbEntity.receiverUsername,
@@ -119,7 +158,7 @@ export class ChatMessageRepository implements IChatMessageRepository {
         message: chatDbEntity.message,
       });
       logger.info(`saved result is ${savedResult}`);
-    } catch (error) { 
+    } catch (error) {
       logger.error(`error inserting chat message ${error}`);
     }
   }
