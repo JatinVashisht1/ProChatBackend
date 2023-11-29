@@ -1,1 +1,0 @@
-export type DeliveryStatus = "sent" | "received" | "read";

@@ -15,7 +15,7 @@ router.get("/", authMiddleware, (req, res) => {
   return res.status(200).json({ success: true });
 });
 
-router.get("/searchUser", authMiddleware, new SearchUserController().searchUserHandler);
+router.get("/searchUser/:queryUser", authMiddleware, new SearchUserController().searchUserHandler);
 
 router.get("/userprofile", authMiddleware, new GetUserProfileController().getUserProfileRequestHandler);
 

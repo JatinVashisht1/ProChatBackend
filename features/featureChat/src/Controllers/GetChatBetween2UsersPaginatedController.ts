@@ -19,7 +19,7 @@ export class GetChatBetween2UsersPaginatedController {
         private chatMessageRepository?: IChatMessageRepository
   ) { }
 
-  getChatBetween2UsersPaginatedHandler: RequestHandler<{anotherUsername: string, startFrom: number | undefined}, unknown, chatMessageResponse, unknown> = async (req, res, next) => {
+  getChatBetween2UsersPaginatedHandler: RequestHandler<{anotherUsername: string, startFrom: number | undefined}, unknown, chatMessageResponse, unknown> = async (req, res, _next) => {
     assertIsDefined(this.chatMessageRepository);
     let startFrom = req.params.startFrom;
     if (!startFrom) {

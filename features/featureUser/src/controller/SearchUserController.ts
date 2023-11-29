@@ -6,18 +6,18 @@ import { assertIsDefined } from "../../../../common/utils/assertIsDefined";
 import createHttpError from "http-errors";
 import { logger } from "../../../../common/winstonLoggerConfiguration";
 
-interface searchUserRequestBody {
-    usernameBody: string;
-}
+// interface searchUserUrlParams {
+//     usernameBody: string;
+// }
 
 @autoInjectable()
 export class SearchUserController {
   constructor (@inject(I_USER_REPOSITORY) private userRepository?: IUserRepository) {}
 
-  searchUserHandler: RequestHandler<unknown, unknown, searchUserRequestBody, unknown> = async (req, res, next) => {
+  searchUserHandler: RequestHandler<{queryUser: string}, unknown, unknown, unknown> = async (req, res, next) => {
     assertIsDefined(this.userRepository);
         
-    const searchUsername = req.body.usernameBody;
+    const searchUsername = req.params.queryUser;
 
     try {
       if (!searchUsername || searchUsername.length === 0) {

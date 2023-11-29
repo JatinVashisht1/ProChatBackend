@@ -1,5 +1,5 @@
 // import { UUID } from "crypto";
-import { DeliveryStatus } from "../../utility/DeliveryStatusType";
+import { DeliveryStatus } from "./DeliveryStatusType";
 
 
 /**

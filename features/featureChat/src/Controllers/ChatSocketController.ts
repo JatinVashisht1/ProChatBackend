@@ -1,12 +1,12 @@
 import { Socket } from "socket.io";
 import { ChatMessageBody } from "../../../common/SocketEvents";
-import { CHAT } from "../../../../common/Events";
 import { autoInjectable, inject } from "tsyringe";
 import { I_CHAT_MESSAGE_REPOSITORY } from "../../../../common/Constants";
 import { IChatMessageRepository } from "../../domain/repository/IChatMessageRepository";
 import { assertIsDefined } from "../../../../common/utils/assertIsDefined";
 import { ChatMessageEntity } from "../../domain/model/ChatMessageEntity";
-import { logger } from "../../../../common/winstonLoggerConfiguration";
+import { stringToDeliveryStatus } from "../../utility/messageDeliveryStateAndStringMapper";
+import { CHAT } from "../../../../common/Events";
 
 /**
  * Controller for handling chat socket events.
@@ -31,47 +31,29 @@ export class ChatSocketController {
     onEmition: (message: ChatMessageBody) => void
   ) => {
     assertIsDefined(this.chatRepository);
-    const body = chatMessageBody.toString();
-    // const json = JSON.parse(body);
-    let json = chatMessageBody;
-
-    logger.info(`json in chatsocketcontroller ${json}`);
-
-    // eslint-disable-next-line eqeqeq
-    if (typeof json == typeof "") {
-      json = JSON.parse(body);
-    }
-    // logger.info(`chat message body ${JSON.stringify(json)}`);
-    logger.info(`chat message body ${chatMessageBody} and type ${typeof json}`);
-
-    // logger.info(`chatMessageBody: ${to}`);
-
-    socket.to(json.to).emit(CHAT, json); // Emit message to recipient
-
+    const chatMessageBodyString = chatMessageBody.toString();
+    const chatMessageBodyJson = JSON.parse(chatMessageBodyString);
+    const messageDeliveryStatus = stringToDeliveryStatus(chatMessageBodyJson.deliveryStatus);
+    if (!messageDeliveryStatus) return;
+    
     const chatMessageEntity: ChatMessageEntity = {
-      senderUsername: json.from,
-      receiverUsername: json.to,
-      message: json.message,
-      createdAt: json.createdAt,
-      deliveryStatus: json.deliveryStatus,
-      messageId: json.messageId,
+      message: chatMessageBodyJson.message,
+      messageId: chatMessageBodyJson.messageId,
+      createdAt: chatMessageBodyJson.createdAt,
+      deliveryStatus: messageDeliveryStatus,
+      receiverUsername: chatMessageBodyJson.to,
+      senderUsername: chatMessageBodyJson.from,
     };
 
-    // logger.info(`chat message entity: ${chatMessageBody.message}`);
-
     await this.chatRepository.addChatMessage(chatMessageEntity);
-
-    // const selfMessageBody: ChatMessageBody = {
-    //   to: json.to,
-    //   message: json.message,
-    //   createdAt: json.createdAt,
-    //   deliveryStatus: json.deliveryStatus,
-    //   from: from,
-    //   messageId: json.messageId,
-    // };
-
-    // logger.debug(`message is ${selfMessageBody}`)
-
-    onEmition(json);
+    socket.to(chatMessageEntity.receiverUsername).emit(CHAT, { 
+      messageId: chatMessageEntity.messageId, 
+      deliveryStatus: chatMessageEntity.deliveryStatus, 
+      createdAt: chatMessageEntity.createdAt, 
+      message: chatMessageEntity.message, 
+      from: chatMessageEntity.senderUsername, 
+      to: chatMessageEntity.receiverUsername 
+    });
+    onEmition(chatMessageBodyJson);
   };
 }

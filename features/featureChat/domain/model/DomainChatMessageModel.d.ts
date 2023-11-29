@@ -2,7 +2,7 @@
  * Type that will be used to interact with user and to send responses.
  */
 
-import { DeliveryStatus } from "../../utility/DeliveryStatusType";
+import { DeliveryStatus } from "./DeliveryStatusType";
 
 export type DomainChatMessageModel = {
     senderUsername: string;

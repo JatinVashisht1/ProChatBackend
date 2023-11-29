@@ -5,7 +5,7 @@ import { ChatMessageModel } from "../database/ChatMessageModel";
 import { logger } from "../../../../common/winstonLoggerConfiguration";
 import { UserEntity } from "../../domain/model/UserEntity";
 import { DomainChatMessageModel } from "../../domain/model/DomainChatMessageModel";
-import { DeliveryStatus } from "../../utility/DeliveryStatusType";
+import { DeliveryStatus } from "../../domain/model/DeliveryStatusType";
 import { ChatMessageDbEntity } from "../database/ChatMessageDbEntity";
 
 /**
@@ -198,5 +198,28 @@ export class ChatMessageRepository implements IChatMessageRepository {
     });
 
     return chatMessageEntities;
+  }
+
+  async updateChatMessageDeliveryState(messageId: string, deliveryStatus: DeliveryStatus): Promise<void> {
+    await ChatMessageModel
+      .updateOne({
+        messageId: messageId
+      },
+      {
+        deliveryStatus: deliveryStatus
+      })
+      .exec();
+  }
+
+  async updateAllChatMessageDeliveryStateBetween2UsersFromOneSender(senderUsername: string, receiverUsername: string, deliveryStatus: DeliveryStatus): Promise<void> {
+    await ChatMessageModel
+      .updateMany({
+        senderUsername: senderUsername,
+        receiverUsername: receiverUsername
+      },
+      {
+        deliveryStatus: deliveryStatus
+      })
+      .exec();
   }
 }

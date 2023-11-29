@@ -2,7 +2,7 @@ import "reflect-metadata";
 import express, { Request, Response } from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { CHAT, CONNECTION } from "../common/Events";
+import { CHAT, CONNECTION, UPDATE_ALL_MESSAGES_DELIVERY_STATUS, UPDATE_MESSAGE_DELIVERY_STATUS } from "../common/Events";
 import {
   ChatMessageBody,
   ClientToServerEvents,
@@ -18,6 +18,10 @@ import { getTokenParts, getUsernameFromToken } from "./common/utils/jwtUtils";
 import "../di/provideDependencices";
 import { chatRouter } from "./featureChat/src/routes/chatRoutes";
 import morgan from "morgan";
+import { UpdateMessageDeliveryStateController } from "./featureChat/src/Controllers/UpdateMessageDeliveryStateController";
+import { UpdateMessageDeliveryModel } from "./featureChat/domain/model/UpdateMessageDeliveryModel";
+import { UpdateAllMessagesDeliveryStatusModel } from "./featureChat/domain/model/UpdateAllMessageDeliveryStatusModel";
+import { UpdateAllChatMessageDeliveryStateBetween2UsersFromOneSenderController } from "./featureChat/src/Controllers/UpdateAllChatMessagesDeliveryStateBetween2UsersFromOneSenderController";
 
 const app = express();
 
@@ -103,9 +107,28 @@ io.on(CONNECTION, (socket) => {
     );
   });
 
-  // const chatMessageBody: ChatMessageBody = {
-  //   to: username,
-  //   message: "hello",
-  // };
-  // socket.to(username).emit(CHAT, chatMessageBody);
+  socket.on(UPDATE_MESSAGE_DELIVERY_STATUS, (updateMessageDeliveryModel: UpdateMessageDeliveryModel) => {
+    new UpdateMessageDeliveryStateController()
+      .updateMessageDeliveryStateHandler(
+        updateMessageDeliveryModel,
+        (from: string, to: string) => {
+          socket.to(from).to(to).emit(UPDATE_MESSAGE_DELIVERY_STATUS, updateMessageDeliveryModel);
+          io.to(from).to(to).emit(UPDATE_MESSAGE_DELIVERY_STATUS, updateMessageDeliveryModel);
+        });
+  });
+
+  socket.on(UPDATE_ALL_MESSAGES_DELIVERY_STATUS, (updateAllMessagesDeliveryStatusModel: UpdateAllMessagesDeliveryStatusModel) => {
+    new UpdateAllChatMessageDeliveryStateBetween2UsersFromOneSenderController()
+      .updateAllChatMessageDeliveryStateBetween2UsersFromOneSenderHandler(
+        updateAllMessagesDeliveryStatusModel,
+        (updateAllChatMessageBodyParam: UpdateAllMessagesDeliveryStatusModel) => {
+          const from = updateAllChatMessageBodyParam.from, to = updateAllChatMessageBodyParam.to;
+          socket.to(from).to(to).emit(UPDATE_ALL_MESSAGES_DELIVERY_STATUS, updateAllChatMessageBodyParam);
+          io.to(from).to(to).emit(UPDATE_ALL_MESSAGES_DELIVERY_STATUS, updateAllChatMessageBodyParam);
+          logger.info(`sent update message delivery status event`);
+        }
+      );
+  });
+  
 });
+
