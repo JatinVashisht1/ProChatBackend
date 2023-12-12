@@ -7,6 +7,8 @@ import { UserEntity } from "../../domain/model/UserEntity";
 import { DomainChatMessageModel } from "../../domain/model/DomainChatMessageModel";
 import { DeliveryStatus } from "../../domain/model/DeliveryStatusType";
 import { ChatMessageDbEntity } from "../database/ChatMessageDbEntity";
+import { UserModel } from "../../../featureUser/data/database/UserModel";
+import createHttpError from "http-errors";
 
 /**
  * ChatMessageRepository is responsible for interacting with the chat message data storage.
@@ -221,5 +223,19 @@ export class ChatMessageRepository implements IChatMessageRepository {
         deliveryStatus: deliveryStatus
       })
       .exec();
+  }
+
+  async getUserFirebaseAccessToken(username: string): Promise<string> {
+    const userEntity = await UserModel.findOne({
+      username: username
+    }, 
+    "firebaseToken"
+    ).exec();
+    
+    if (!userEntity) {
+      throw createHttpError(404, `user with username ${username} does not exist`);
+    }
+
+    return userEntity.firebaseToken;
   }
 }

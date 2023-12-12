@@ -11,4 +11,5 @@ export type IChatMessageRepository = {
   getChatMessagesBetween2UsersPaginated(user1: string, user2: string, startIndex: number): Promise<DomainChatMessageModel[]>;
   updateChatMessageDeliveryState(messageId: string, deliveryStatus: DeliveryStatus): Promise<void>;
   updateAllChatMessageDeliveryStateBetween2UsersFromOneSender(senderUsername: string, receiverUsername: string, deliveryStatus: DeliveryStatus): Promise<void>;
+  getUserFirebaseAccessToken(username: string): Promise<string>;
 };

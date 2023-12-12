@@ -34,6 +34,13 @@ const UserSchema = new Schema(
       type: String,
       enum: ['online', 'offline'],
       required: true,
+      default: "offline"
+    },
+
+    firebaseToken: {
+      type: String,
+      required: true,
+      default: "",
     }
   },
   {

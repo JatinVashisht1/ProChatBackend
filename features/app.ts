@@ -22,8 +22,15 @@ import { UpdateMessageDeliveryStateController } from "./featureChat/src/Controll
 import { UpdateMessageDeliveryModel } from "./featureChat/domain/model/UpdateMessageDeliveryModel";
 import { UpdateAllMessagesDeliveryStatusModel } from "./featureChat/domain/model/UpdateAllMessageDeliveryStatusModel";
 import { UpdateAllChatMessageDeliveryStateBetween2UsersFromOneSenderController } from "./featureChat/src/Controllers/UpdateAllChatMessagesDeliveryStateBetween2UsersFromOneSenderController";
+import admin from "firebase-admin";
+import { Message } from "firebase-admin/lib/messaging/messaging-api";
 
 const app = express();
+
+admin.initializeApp({
+  credential: admin.credential.applicationDefault()
+});
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -100,9 +107,21 @@ io.on(CONNECTION, (socket) => {
     new ChatSocketController().chatSocketHandler(
       chatMessageBody,
       socket,
-      (message) => {
+      (message, firebaseTokenReceiver) => {
         logger.info(`message is ${JSON.stringify(message)}`);
         io.to(username).emit(CHAT, message);
+        const notificationMessage: Message = {
+          token: firebaseTokenReceiver,
+          notification: {
+            title: message.from,
+            body: message.message,
+          },
+          data: {
+            "message": JSON.stringify(message)
+          }
+        };
+
+        admin.messaging().send(notificationMessage);
       }
     );
   });

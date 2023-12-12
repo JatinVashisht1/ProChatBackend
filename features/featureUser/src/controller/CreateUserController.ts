@@ -9,6 +9,7 @@ import { genPassword, issueJWT } from "../../../common/utils/jwtUtils";
 interface createUserBody {
   username?: string;
   password?: string;
+  firebaseToken?: string;
 }
 
 @autoInjectable()
@@ -27,14 +28,15 @@ export class CreateUserController {
   createUserHandler: RequestHandler<unknown, unknown, createUserBody, unknown> =
     async (req, res, next) => {
       try {
-        const { username, password } = req.body;
-        if (!username || !password) {
+        const { username, password, firebaseToken } = req.body;
+        if (!username || !password || !firebaseToken) {
           throw createHttpError(412, "Username and Password is required");
         }
         const passwordHashed = genPassword(password);
         const userEntity: UserEntity = {
           username: username,
           password: passwordHashed,
+          firebaseToken: firebaseToken,
         };
         if (!this.userRepository)
           throw createHttpError(500, "Internal server error");

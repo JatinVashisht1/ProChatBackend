@@ -56,7 +56,8 @@ export class UserRepository implements IUserRepository {
         password: {
           hash: user.password.hash,
           salt: user.password.salt,
-        }
+        },
+        firebaseToken: user.firebaseToken,
       };
 
       userEntityList.push(userEntity);
@@ -119,8 +120,25 @@ export class UserRepository implements IUserRepository {
         salt: user.password.salt,
         hash: user.password.hash,
       },
+      firebaseToken: user.firebaseToken,
     };
 
     return userEntity;
+  }
+
+  async updateUserFirebaseToken(username: string, firebaseToken: string): Promise<void> {
+    const user = await UserModel.find({
+      username: username
+    })
+      .exec();
+
+    if (!user) throw createHttpError(`user with username ${username} does not exist`);
+
+    await UserModel.updateOne({
+      username: username
+    }, {
+      firebaseToken: firebaseToken
+    })
+      .exec();
   }
 }

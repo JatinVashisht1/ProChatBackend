@@ -10,6 +10,7 @@ import { validPassword, issueJWT } from "../../../common/utils/jwtUtils";
 interface signInUserBody {
   username?: string;
   password?: string;
+  firebaseToken?: string;
 }
 
 @autoInjectable()
@@ -30,8 +31,8 @@ export class SignInController {
       try {
         assertIsDefined(this.userRepository);
 
-        const { username, password } = req.body;
-        if (!username || !password) {
+        const { username, password, firebaseToken } = req.body;
+        if (!username || !password || !firebaseToken) {
           throw createHttpError(412, "In sufficient credentials");
         }
 
@@ -49,6 +50,8 @@ export class SignInController {
         if (!isPasswordValid) {
           throw createHttpError(401, "invalid username or password");
         }
+
+        await this.userRepository.updateUserFirebaseToken(username, firebaseToken);
 
         const jwt = issueJWT(username);
 

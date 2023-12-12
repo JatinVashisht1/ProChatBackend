@@ -28,7 +28,7 @@ export class ChatSocketController {
     chatMessageBody: ChatMessageBody,
     socket: Socket,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onEmition: (message: ChatMessageBody) => void
+    onEmition: (message: ChatMessageBody, firebaseTokenReceiver: string) => void
   ) => {
     assertIsDefined(this.chatRepository);
     const chatMessageBodyString = chatMessageBody.toString();
@@ -54,6 +54,9 @@ export class ChatSocketController {
       from: chatMessageEntity.senderUsername, 
       to: chatMessageEntity.receiverUsername 
     });
-    onEmition(chatMessageBodyJson);
+
+    const firebaseTokenReceiver = await this.chatRepository.getUserFirebaseAccessToken(chatMessageEntity.receiverUsername);
+    
+    onEmition(chatMessageBodyJson, firebaseTokenReceiver);
   };
 }

@@ -34,4 +34,11 @@ export interface IUserRepository {
    * @param username username of user
    */
   getUserProfile(username: string): Promise<UserProfile>;
+
+  /**
+   * Updates the firebase token of user
+   * @param username username of user
+   * @param firebaseToken firebase token to update
+   */
+  updateUserFirebaseToken(username: string, firebaseToken: string): Promise<void>;
 }
