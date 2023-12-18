@@ -6,6 +6,7 @@ import createHttpError from "http-errors";
 import { PasswordType } from "../../domain/model/PasswordType";
 import { assertIsDefined } from "../../../../common/utils/assertIsDefined";
 import { validPassword, issueJWT } from "../../../common/utils/jwtUtils";
+import { logger } from "../../../../common/winstonLoggerConfiguration";
 
 interface signInUserBody {
   username?: string;
@@ -33,6 +34,7 @@ export class SignInController {
 
         const { username, password, firebaseToken } = req.body;
         if (!username || !password || !firebaseToken) {
+          logger.info(`username: ${username}, password: ${password}, ${firebaseToken}`);
           throw createHttpError(412, "In sufficient credentials");
         }
 

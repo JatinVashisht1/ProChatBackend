@@ -25,10 +25,13 @@ import { UpdateAllChatMessageDeliveryStateBetween2UsersFromOneSenderController }
 import admin from "firebase-admin";
 import { Message } from "firebase-admin/lib/messaging/messaging-api";
 
+
 const app = express();
 
+import serviceAccount from "../demochatapplication-79bc3-firebase-adminsdk-d00yy-c7ed1edfa0.json" assert {type: "json"} ;
+
 admin.initializeApp({
-  credential: admin.credential.applicationDefault()
+  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount)
 });
 
 
@@ -107,21 +110,24 @@ io.on(CONNECTION, (socket) => {
     new ChatSocketController().chatSocketHandler(
       chatMessageBody,
       socket,
-      (message, firebaseTokenReceiver) => {
+      (message, receiverFirebaseToken) => {
         logger.info(`message is ${JSON.stringify(message)}`);
         io.to(username).emit(CHAT, message);
-        const notificationMessage: Message = {
-          token: firebaseTokenReceiver,
-          notification: {
-            title: message.from,
-            body: message.message,
-          },
-          data: {
-            "message": JSON.stringify(message)
-          }
-        };
 
-        admin.messaging().send(notificationMessage);
+        if (receiverFirebaseToken && receiverFirebaseToken.length > 0) {
+          const notificationMessage: Message = {
+            token: receiverFirebaseToken,
+            notification: {
+              title: message.from,
+              body: message.message,
+            },
+            data: {
+              "fullMessage": JSON.stringify(message)
+            }
+          };
+          
+          admin.messaging().send(notificationMessage);
+        }
       }
     );
   });
