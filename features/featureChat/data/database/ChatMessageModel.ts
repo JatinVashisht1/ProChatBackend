@@ -37,6 +37,11 @@ const ChatMessageSchema = new Schema(
       required: true,
       // TODO: make sure to change it later
       default: () => randomUUID()
+    },
+
+    deletedByReceiver: {
+      type: Boolean,
+      default: false,
     }
   }
 );

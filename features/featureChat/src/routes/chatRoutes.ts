@@ -3,6 +3,7 @@ import { authMiddleware } from "../../../common/utils/jwtUtils";
 import { GetChatMessagesBetween2UsernamesController } from "../Controllers/GetChatBetween2UsersController";
 import { GetChatAccountsOfUserController } from "../Controllers/GetChatAccountsOfUserController";
 import { GetChatBetween2UsersPaginatedController } from "../Controllers/GetChatBetween2UsersPaginatedController";
+import { DeleteChatMessageController } from "../Controllers/DeleteChatMessageController";
 
 const router = Router();
 
@@ -22,6 +23,11 @@ router.get(
 router.get(
   "/getuserchatpaginated/:anotherusername/:startFrom?",
   new GetChatBetween2UsersPaginatedController().getChatBetween2UsersPaginatedHandler
+);
+
+router.delete(
+  "/deletechatmessage",
+  new DeleteChatMessageController().deleteChatMessageRequestHandler
 );
 
 export const chatRouter = router;

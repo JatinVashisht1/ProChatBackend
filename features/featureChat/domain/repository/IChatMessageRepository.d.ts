@@ -12,4 +12,5 @@ export type IChatMessageRepository = {
   updateChatMessageDeliveryState(messageId: string, deliveryStatus: DeliveryStatus): Promise<void>;
   updateAllChatMessageDeliveryStateBetween2UsersFromOneSender(senderUsername: string, receiverUsername: string, deliveryStatus: DeliveryStatus): Promise<void>;
   getUserFirebaseAccessToken(username: string): Promise<string>;
+  deleteChatMessage(username: string, messageIds: string[]): Promise<boolean>;
 };

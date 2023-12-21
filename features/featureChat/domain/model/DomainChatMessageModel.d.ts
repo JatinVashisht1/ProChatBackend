@@ -15,4 +15,5 @@ export type DomainChatMessageModel = {
     createdTime: string;
     messageId: string;
     deliveryStatus: DeliveryStatus;
+    deletedByReceiver: boolean;
 }

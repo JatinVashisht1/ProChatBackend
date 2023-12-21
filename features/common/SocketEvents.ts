@@ -2,20 +2,18 @@ import { UpdateAllMessagesDeliveryStatusModel } from "../featureChat/domain/mode
 import { UpdateMessageDeliveryModel } from "../featureChat/domain/model/UpdateMessageDeliveryModel";
 
 export interface ServerToClientEvents {
-  noArg: () => void;
-  basicEmit: (a: number, b: string, c: Buffer) => void;
-  withAck: (d: string, callback: (e: number) => void) => void;
   chat: (chatMessageBody: ChatMessageBody) => string;
   updateMessageDeliveryStatus: (updateMessageDeliveryModel: UpdateMessageDeliveryModel) => void;
   updateAllMessageDeliveryStatus: (updateAllMessagesDeliveryStatus: UpdateAllMessagesDeliveryStatusModel) => void;
+  deleteChatMessages: (messageIds: string[], anotherUsername: string, initiatedBy: string) => void;
 }
 
-export type ChatMessageBody = { 
+export type ChatMessageBody = {
   from: string;
-  to: string; 
-  message: string; 
-  createdAt: number; 
-  deliveryStatus: string; 
+  to: string;
+  message: string;
+  createdAt: number;
+  deliveryStatus: string;
   messageId: string;
 };
 
@@ -23,6 +21,7 @@ export interface ClientToServerEvents {
   chat: (chatMessageBody: ChatMessageBody) => void;
   updateMessageDeliveryStatus: (updateMessageDeliveryModel: UpdateMessageDeliveryModel) => void;
   updateAllMessageDeliveryStatus: (updateAllMessagesDeliveryStatus: UpdateAllMessagesDeliveryStatusModel) => void;
+  deleteChatMessages: (messageIds: string[], anotherUsername: string, initiatedBy: string) => void;
 }
 
 export interface InterServerEvents {

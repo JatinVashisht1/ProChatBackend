@@ -2,7 +2,7 @@ import "reflect-metadata";
 import express, { Request, Response } from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { CHAT, CONNECTION, UPDATE_ALL_MESSAGES_DELIVERY_STATUS, UPDATE_MESSAGE_DELIVERY_STATUS } from "../common/Events";
+import { CHAT, CONNECTION, DELETE_CHAT_MESSAGES, UPDATE_ALL_MESSAGES_DELIVERY_STATUS, UPDATE_MESSAGE_DELIVERY_STATUS } from "../common/Events";
 import {
   ChatMessageBody,
   ClientToServerEvents,
@@ -29,6 +29,7 @@ import { Message } from "firebase-admin/lib/messaging/messaging-api";
 const app = express();
 
 import serviceAccount from "../demochatapplication-79bc3-firebase-adminsdk-d00yy-c7ed1edfa0.json" assert {type: "json"} ;
+import { DeleteChatMessagesViaSocketController } from "./featureChat/src/Controllers/DeleteChatMessageViaSocketController";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount)
@@ -153,6 +154,13 @@ io.on(CONNECTION, (socket) => {
           logger.info(`sent update message delivery status event`);
         }
       );
+
+      
+  });
+
+  socket.on(DELETE_CHAT_MESSAGES, (messageIds: string[], anotherUsername: string, initiatedBy: string) => {
+    new DeleteChatMessagesViaSocketController()
+      .deleteChatMessagesViaSocketHandler(socket.data.username, messageIds, anotherUsername, socket, initiatedBy);
   });
   
 });

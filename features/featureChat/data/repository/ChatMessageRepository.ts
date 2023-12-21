@@ -59,7 +59,7 @@ export class ChatMessageRepository implements IChatMessageRepository {
       $or: [
         { senderUsername: user1, receiverUsername: user2 },
         { senderUsername: user2, receiverUsername: user1 },
-      ],
+      ]
     },).exec();
 
     const messageEntityListUser1AndUser2: DomainChatMessageModel[] =
@@ -82,6 +82,7 @@ export class ChatMessageRepository implements IChatMessageRepository {
           createdYear: year,
           messageId: message.messageId.toString(),
           deliveryStatus: message.deliveryStatus as DeliveryStatus,
+          deletedByReceiver: message.deletedByReceiver,
         };
       });
 
@@ -121,6 +122,7 @@ export class ChatMessageRepository implements IChatMessageRepository {
         createdYear: year,
         messageId: message.messageId.toString(),
         deliveryStatus: message.deliveryStatus as DeliveryStatus,
+        deletedByReceiver: message.deletedByReceiver,
       };
     });
 
@@ -196,6 +198,7 @@ export class ChatMessageRepository implements IChatMessageRepository {
         createdYear: year,
         messageId: chatMessage.messageId.toString(),
         deliveryStatus: chatMessage.deliveryStatus as DeliveryStatus,
+        deletedByReceiver: chatMessage.deletedByReceiver,
       };
     });
 
@@ -237,5 +240,28 @@ export class ChatMessageRepository implements IChatMessageRepository {
     }
 
     return userEntity.firebaseToken;
+  }
+
+  async deleteChatMessage(username: string, messageIds: string[]): Promise<boolean> {
+    const message = await ChatMessageModel
+      .deleteMany({
+        senderUsername: username,
+        messageId: { $in: messageIds }
+      });
+
+    const deleteMessagesAsSender = await ChatMessageModel
+      .updateMany({
+        receiverUsername: username,
+        messageId: { $in: messageIds }
+      }, {
+        deletedByReceiver: true
+      })
+      .exec();
+
+    if (!message && !deleteMessagesAsSender) {
+      throw createHttpError(404, "no message found with given message id");
+    }
+
+    return (((message.acknowledged) && (message.deletedCount > 0)) || (deleteMessagesAsSender.matchedCount > 0));
   }
 }
